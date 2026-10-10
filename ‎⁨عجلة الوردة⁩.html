@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>عجلة الوردة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;800&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#fff3f7;--fg:#4a1535;--card:#fff;--acc:#c2255c;--soft:#ffd6e4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a0f20;--fg:#ffe3ee;--card:#431a32;--soft:#5a2543}}
+:root[data-theme="dark"]{--bg:#2a0f20;--fg:#ffe3ee;--card:#431a32;--soft:#5a2543}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;padding-bottom:24px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg fill='%23f06595' fill-opacity='.16'%3E%3Ccircle cx='30' cy='22' r='7'/%3E%3Ccircle cx='30' cy='38' r='7'/%3E%3Ccircle cx='22' cy='30' r='7'/%3E%3Ccircle cx='38' cy='30' r='7'/%3E%3C/g%3E%3Ccircle cx='30' cy='30' r='4' fill='%23fcc419' fill-opacity='.4'/%3E%3Cg fill='%2351cf66' fill-opacity='.2'%3E%3Cellipse cx='100' cy='100' rx='12' ry='5' transform='rotate(-30 100 100)'/%3E%3Cellipse cx='112' cy='40' rx='9' ry='4' transform='rotate(35 112 40)'/%3E%3C/g%3E%3C/svg%3E"),radial-gradient(circle at 12% 8%,rgba(255,170,200,.55),transparent 45%),radial-gradient(circle at 90% 92%,rgba(255,224,130,.45),transparent 45%),var(--bg);color:var(--fg);font-family:Tajawal,Tahoma,Arial,sans-serif;text-align:center;overflow-x:hidden;min-height:100vh}
+h1{font-size:clamp(22px,5vw,34px);margin:14px 8px 0;font-weight:800}
+.sub{margin:4px 0 0;font-size:15px;opacity:.8}
+.w{position:relative;width:min(94vw,560px);margin:34px auto 10px}
+canvas{width:100%;height:auto;display:block;transition:transform 5s cubic-bezier(.15,.6,.1,1)}
+.p{position:absolute;top:-24px;left:50%;margin-left:-18px;width:0;height:0;border:18px solid transparent;border-top:44px solid #7a1f4d;border-bottom:0;z-index:2;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.go{position:absolute;top:50%;left:50%;width:23%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:4px solid #fff;background:#7a1f4d;color:#fff;font:800 clamp(14px,3.6vw,20px) Tajawal,Tahoma,sans-serif;cursor:pointer;z-index:2;box-shadow:0 3px 8px rgba(0,0,0,.35)}
+.go:disabled{opacity:.6;cursor:default}
+.go:focus-visible,button:focus-visible{outline:3px solid #fab005;outline-offset:2px}
+label{font-size:15px;display:inline-flex;gap:8px;align-items:center;margin:8px}
+.info{font-size:14px;opacity:.8;margin-bottom:18px}
+.m{position:fixed;inset:0;background:rgba(40,8,25,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:5}
+.m.on{display:flex}
+.c{background:var(--card);border-radius:22px;padding:22px 20px;width:min(94vw,520px);max-height:90%;overflow:auto;border:4px solid var(--acc)}
+.nm{font-size:clamp(34px,9vw,52px);font-weight:800;color:var(--acc);margin:0 0 8px}
+.q{font-size:clamp(20px,5vw,26px);line-height:1.7;font-weight:800;margin:6px 0 14px}
+.a{display:none;background:var(--soft);border-radius:14px;padding:12px 14px;font-size:clamp(18px,4.4vw,22px);line-height:1.7;margin-bottom:14px}
+.a.on{display:block}
+button.b{font:800 17px Tajawal,Tahoma,sans-serif;border:0;border-radius:12px;padding:11px 18px;margin:4px;cursor:pointer;background:var(--acc);color:#fff}
+button.b.s{background:var(--soft);color:var(--fg)}
+.op{display:block;width:100%;text-align:right;font:700 clamp(16px,4vw,19px) Tajawal,Tahoma,sans-serif;line-height:1.6;padding:11px 14px;margin:8px 0;border-radius:12px;border:2px solid var(--acc);background:var(--card);color:var(--fg);cursor:pointer}
+.op:disabled{cursor:default}
+.op.ok{background:#2f9e44;border-color:#2f9e44;color:#fff}
+.op.no{background:#e03131;border-color:#e03131;color:#fff}
+.a.bad{background:var(--soft)}
+@media (prefers-reduced-motion:reduce){canvas{transition-duration:1.5s}}
+</style>
+</head>
+<body>
+<h1>🌸 عجلة الوردة</h1>
+<p class="sub">دوّري العجلة لاختيار طالبة وسؤال من الدرس</p>
+<div class="w">
+  <div class="p"></div>
+  <canvas id="c"></canvas>
+  <button class="go" id="go">دوّري</button>
+</div>
+<label><input type="checkbox" id="nr" checked> عدم تكرار الاسم حتى ينتهي الجميع</label>
+<div class="info" id="info"></div>
+
+<div class="m" id="m" role="dialog" aria-modal="true">
+  <div class="c">
+    <div class="nm" id="nm"></div>
+    <div class="q" id="q"></div>
+    <div id="o"></div>
+    <div class="a" id="a"></div>
+    <button class="b s" id="cl">إغلاق</button>
+  </div>
+</div>
+
+<script>
+const N=["نبيله","ليلى","جوليا","رانسي","وجد","ندى","بيسان","زهراء","ماريا","هدى","ناريز","نيراس","نايا","ديالا","ملاذ","صبا","فرح","وفاء","هبه","ميرا","متاب","فطوم","فاطمة","مريم","منال","تاليا","تالين","مشاعل","اوصاف","ميلاف","ميراف","جوري","جودي","نور","مها","جيهان","ليان","وسن","رندا"];
+const Q=[
+["ما وظيفة الجذور؟","تثبّت النبات وتمتص الماء والمواد المغذية","تصنع الغذاء بالبناء الضوئي","تنتج البذور","تحمل الأزهار والأوراق"],
+["ما وظيفة السيقان؟","تدعم النبات وتحمل الأوراق وتنقل الماء والغذاء","تمتص الماء من التربة بالشعيرات","تنتج حبوب اللقاح","تصنع الغذاء في البلاستيدات"],
+["ماذا ينقل الخشب في النبات؟","الماء والأملاح من التربة إلى أعلى","الغذاء من الأوراق إلى الجذور","حبوب اللقاح إلى الميسم","الأكسجين إلى الثغور"],
+["ما الطبقة التي تفصل بين الخشب واللحاء؟","الكامبيوم","القلنسوة","الأدمة","البشرة"],
+["كيف تكون الساق الخشبية؟","قاسية وقوية","طرية ومرنة","تعيش في الماء فقط","بلا أوعية"],
+["أي هذه النباتات يخزّن الغذاء في ساقه؟","قصب السكر","الجزر","الحزازيات","السرخس"],
+["ما فائدة الشعيرات الجذرية؟","تزيد مساحة سطح الجذر لامتصاص كمية أكبر من الماء","تحمي قمة الجذر","تنقل الغذاء إلى الأوراق","تفتح الثغور"],
+["ما وظيفة القلنسوة؟","تحمي قمة الجذر وتسمح لها باختراق التربة","تمتص الماء","تصنع الغذاء","تنتج البذور"],
+["ما الجذور الوتدية؟","جذور تنمو إلى أعماق كبيرة في التربة","جذور تنمو قريبة من السطح وتكوّن شبكة","جذور موجودة في الحزازيات فقط","جذور لا تمتص الماء"],
+["ما أشباه الجذور؟","تراكيب تشبه الشعر تثبّت النباتات التي لا جذور حقيقية لها","ثغور في الورقة","أنابيب لنقل الغذاء","أنواع من الأبواغ"],
+["ما النتح؟","فقدان النبات للماء عن طريق الأوراق","امتصاص الماء بالجذور","انتقال حبوب اللقاح","تخزين الغذاء"],
+["ما البناء الضوئي؟","عملية تستخدم فيها ضوء الشمس لإنتاج الغذاء (الجلوكوز)","انتقال حبوب اللقاح إلى الميسم","فقدان الماء من الأوراق","انتشار البذور"],
+["ما المواد التي يحتاجها النبات للبناء الضوئي؟","ثاني أكسيد الكربون والماء وضوء الشمس","الأكسجين والجلوكوز","الماء والأملاح فقط","الأكسجين وحبوب اللقاح"],
+["ما نواتج البناء الضوئي؟","الجلوكوز والأكسجين","ثاني أكسيد الكربون والماء","الماء وبخار الماء","الأبواغ والبذور"],
+["أين يحدث البناء الضوئي؟","في البلاستيدات الخضراء","في الجذور","في الثغور","في الكامبيوم"],
+["ما الثغور؟","فتحات صغيرة يدخل منها الهواء ويخرج الماء والأكسجين","طبقة شمعية على الورقة","أنابيب لنقل الغذاء","تراكيب تحمي الجذر"],
+["ما وظيفة الخلايا الحارسة؟","التحكم في فتح الثغور وغلقها","نقل الغذاء","إنتاج حبوب اللقاح","تثبيت النبات"],
+["ما فائدة الأدمة؟","طبقة شمعية تمنع فقدان الكثير من الماء","فتحات لدخول الهواء","أنابيب لنقل الغذاء","خلايا تصنع الغذاء"],
+["ما الورقة المركبة؟","أوراق صغيرة تنمو في مجموعات","ورقة واحدة منفردة","ورقة بلا عروق","ورقة بلا عنق"],
+["أي هذه من أجزاء الورقة؟","النصل والعروق والعنق","الميسم والمتك والمبيض","الكامبيوم والخشب واللحاء","القلنسوة والشعيرات الجذرية"],
+["ما وظيفة العروق في الورقة؟","تحمل الماء والأملاح إلى الورقة والغذاء إلى باقي النبات","تحمي الورقة","تُدخل ثاني أكسيد الكربون","تنتج البذور"],
+["ما التكاثر؟","إنتاج أفراد من النوع نفسه","امتصاص الماء","تحويل الضوء إلى غذاء","فقدان الماء"],
+["ما التكاثر الجنسي؟","اندماج مشيج مذكر مع مشيج مؤنث","استخدام نوع واحد من الخلايا","انقسام ثنائي","التبرعم"],
+["ما البذرة؟","تركيب فيه نبات صغير نام ويخزّن الغذاء","حبة لقاح","جزء من الورقة","جزء من الجذر"],
+["ما التلقيح؟","انتقال حبوب اللقاح من المتك إلى الميسم","اندماج المشيجين","انتشار البذور","انتقال الماء إلى الأوراق"],
+["ما نوعا التلقيح؟","الذاتي والخلطي","الجنسي واللاجنسي","الوتدي والليفي","البسيط والمركب"],
+["من الملقّحات؟","الطيور والحشرات","الجذور والسيقان","الثغور والعروق","الأبواغ والبذور"],
+["أين يوجد المشيج المذكر؟","داخل حبوب اللقاح في المتك","داخل البييض","في الميسم","في القلم"],
+["ما الإخصاب؟","اندماج المشيج المذكر مع المشيج المؤنث","انتقال حبوب اللقاح","انتشار البذور","فقدان الماء"],
+["كيف تنتشر البذور بعيدًا عن النبات الأم؟","بالريح والماء والحيوانات","بالجذور والسيقان","بالثغور فقط","بالبلاستيدات"],
+["كيف تتكاثر النباتات اللابذرية؟","بالأبواغ","بالبذور","بالأزهار","بالثمار"],
+["ما المشترك بين ساق النرجس وساق البلوط؟","كلاهما يدعم النبات وينقل الماء والغذاء بالخشب واللحاء","كلاهما خشبي","كلاهما يخزّن الماء فقط","كلاهما بلا لحاء"]
+];
+const cv=document.getElementById('c'),x=cv.getContext('2d'),S=1000,n=N.length,st=360/n;
+cv.width=cv.height=S;
+const used=new Set(),cols=["#f06595","#faa2c1","#e64980","#fcc2d7"];
+function draw(){
+  x.clearRect(0,0,S,S);
+  for(let i=0;i<n;i++){
+    const u=used.has(i);
+    x.save();x.translate(S/2,S/2);x.rotate(i*st*Math.PI/180);
+    x.beginPath();x.ellipse(0,-335,31,150,0,0,7);
+    x.fillStyle=u?"#d9c9d1":cols[i%4];x.fill();
+    x.lineWidth=3;x.strokeStyle="#fff";x.stroke();
+    x.translate(0,-335);x.rotate(-Math.PI/2);
+    x.textAlign="center";x.textBaseline="middle";x.direction="rtl";
+    x.font="800 27px Tajawal,Tahoma,Arial,sans-serif";
+    x.fillStyle=u?"#8a7480":(i%4==1||i%4==3?"#4a1535":"#fff");
+    x.fillText(N[i],0,0,230);
+    x.restore();
+  }
+  x.beginPath();x.arc(S/2,S/2,135,0,7);x.fillStyle="#fcc419";x.fill();
+  x.lineWidth=8;x.strokeStyle="#f08c00";x.stroke();
+  document.getElementById('info').textContent="المتبقي: "+(n-used.size)+" من "+n;
+}
+draw();
+if(document.fonts&&document.fonts.load){document.fonts.load("800 27px Tajawal").then(draw).catch(()=>{});}
+let AC;
+function A(){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state=='suspended')AC.resume();return AC}catch(e){}}
+function tone(f,t,d,type,v){const a=A();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.05);}
+function ticks(){const a=A();if(!a)return;const t0=a.currentTime+.05;for(let k=0;k<64;k++)tone(900+(k%2)*200,t0+5*(1-Math.pow(1-k/64,1/3)),.05,'square',.06);}
+function cheer(){const a=A();if(!a)return;const t=a.currentTime+.02;[523,659,784,1047,1319].forEach((f,k)=>tone(f,t+k*.11,.5,'triangle',.18));tone(1568,t+.6,.8,'sine',.12);}
+let rot=0,busy=false,qs=[];
+const $=id=>document.getElementById(id);
+function nextQ(){
+  if(!qs.length){qs=[...Q.keys()].sort(()=>Math.random()-.5);}
+  return Q[qs.pop()];
+}
+$('go').onclick=()=>{
+  if(busy)return;
+  let pool=[...N.keys()].filter(i=>!used.has(i));
+  if(!pool.length){used.clear();pool=[...N.keys()];draw();}
+  const i=pool[Math.random()*pool.length|0],j=(Math.random()-.5)*st*.6;
+  rot=Math.ceil(rot/360)*360+2160-i*st+j;
+  busy=true;$('go').disabled=true;ticks();
+  cv.style.transform="rotate("+rot+"deg)";
+  const wait=matchMedia("(prefers-reduced-motion:reduce)").matches?1600:5300;
+  setTimeout(()=>{
+    if($('nr').checked)used.add(i);
+    draw();
+    const q=nextQ();
+    $('nm').textContent=N[i];showQ(q);
+    $('m').classList.add('on');
+    busy=false;$('go').disabled=false;
+  },wait);
+};
+function showQ(q){
+  $('q').textContent=q[0];$('a').classList.remove('on','bad');$('a').textContent='';
+  const o=$('o');o.innerHTML='';
+  q.slice(1).map((t,k)=>[t,k==0]).sort(()=>Math.random()-.5).forEach(([t,ok])=>{
+    const b=document.createElement('button');b.className='op';b.textContent=t;
+    b.onclick=()=>{
+      const all=[...o.children];all.forEach(e=>e.disabled=true);
+      b.classList.add(ok?'ok':'no');
+      if(ok){cheer();$('a').textContent='🎉 أحسنتِ! إجابة صحيحة';}
+      else{all.find(e=>e.textContent==q[1]).classList.add('ok');$('a').textContent='الإجابة الصحيحة: '+q[1];$('a').classList.add('bad');}
+      $('a').classList.add('on');
+    };
+    o.appendChild(b);
+  });
+}
+$('cl').onclick=()=>$('m').classList.remove('on');
+</script>
+</body>
+</html>
